@@ -6,6 +6,7 @@ const cors = require('cors')
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static('build'))
 
 //Loggign for everything else than POST, doesnt include body
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms', {
