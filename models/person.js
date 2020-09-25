@@ -1,18 +1,15 @@
 const mongoose = require('mongoose')
 var uniqueValidator = require('mongoose-unique-validator')
-
-/* eslint-disable */
 const url = process.env.MONGODB_URI
-/* eslint-enable */
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 console.log('connecting to', url)
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(
+  .then(() => {
     console.log('connected to MongoDB')
-  )
+  })
   .catch((error) => {
     console.log('error connecting to MongoDB:', error.message)
   })

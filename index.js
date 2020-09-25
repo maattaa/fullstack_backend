@@ -11,19 +11,19 @@ app.use(express.static('build'))
 
 //Loggign for everything else than POST, excluding body
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms', {
-  skip: function (req, res) {
+  skip: function (req) {
     return req.method === 'POST'
   }
 }))
 
 //Logging for POST, contains body
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body', {
-  skip: function (req, res) {
+  skip: function (req) {
     return req.method !== 'POST'
   }
 }))
 
-morgan.token('body', function (req, res) {
+morgan.token('body', function (req) {
   return JSON.stringify(req.body)
 })
 
@@ -47,7 +47,7 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
-    .then(result => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(error => next(error))
@@ -69,8 +69,6 @@ app.post('/api/persons', (req, res, next) => {
     .catch(error => next(error))
 })
 
-const options = { runValidators: true }
-
 app.put('/api/persons/:id', (req, res, next) => {
 
   const id = req.params.id
@@ -88,7 +86,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.get('/info', (req, res, error) => {
+app.get('/info', (req, res, next) => {
 
   Person.countDocuments({})
     .then(count => {
