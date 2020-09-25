@@ -62,23 +62,26 @@ app.post('/api/persons', (req, res, next) => {
     })
 
     person.save()
-    .then(savedPerson => (savedPerson.toJSON()))
-    .then(savedAndformatted => {
-        res.json(savedAndformatted)
-    })
-    .catch(error => next(error))
+        .then(savedPerson => (savedPerson.toJSON()))
+        .then(savedAndformatted => {
+            res.json(savedAndformatted)
+        })
+        .catch(error => next(error))
 })
+
+const options = { runValidators: true }
 
 app.put('/api/persons/:id', (req, res, next) => {
 
-    const body = req.body
-    const person = {
-        name: body.name,
-        number: body.number,
-        id: body.id,
-    }
+    const id = req.params.id
+    const number = req.body.number
 
-    Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    const options = {
+        runValidators: true,
+        context: 'query',
+        new: true
+    }
+    Person.findOneAndUpdate({ _id: id }, { number: number }, options)
         .then(updatedPerson => {
             res.json(updatedPerson)
         })
@@ -96,7 +99,7 @@ app.get('/info', (req, res, error) => {
 })
 
 const errorHandler = (error, req, res, next) => {
-    console.error(error.message)
+
 
     if (error.name === 'CastError') {
         return res.status(400).send({ error: 'malformatted id' })
